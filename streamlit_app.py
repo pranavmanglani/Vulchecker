@@ -1,6 +1,4 @@
-import streamlit as st 
-import requests 
-from urllib.parse import urlencode
+import streamlit as st import requests from urllib.parse import urlencode
 
 st.set_page_config(page_title="Advanced Vulnerability Scanner", layout="wide") st.title("🛡️ Advanced Web Vulnerability Tester")
 
@@ -14,7 +12,7 @@ def test_xss_vulnerability(url): payloads = [ "<script>alert('XSS')</script>", "
 
 def test_open_redirect(url): redirect_url = "https://evil.com" for param in ["next", "url", "redirect"]: test_url = f"{url}?{param}={redirect_url}" try: r = requests.get(test_url, allow_redirects=False, timeout=5) if r.status_code in [301, 302] and redirect_url in r.headers.get("Location", ""): return True, test_url except Exception: pass return False, url
 
-def test_ssti_vulnerability(url, fingerprint=False): payloads = { "{{77}}": ("49", "Jinja2"), "{{7'7'}}": ("7777777", "Jinja2"), "${77}": ("49", "Velocity"), "<%= 77 %>": ("49", "ERB"), "#{7*7}": ("49", "Twig/Freemarker") } for payload, (expected, engine) in payloads.items(): test_url = f"{url}?input={payload}" try: r = requests.get(test_url, timeout=5) if expected in r.text: if fingerprint: return True, test_url, engine return True, test_url, None except Exception: continue return False, url, None
+def test_ssti_vulnerability(url, fingerprint=False): payloads = { "{{77}}": ("49", "Jinja2"), "{{7'7'}}": ("7777777", "Jinja2"), "${77}": ("49", "Velocity/Freemarker"), "<%= 77 %>": ("49", "ERB"), "#set($a=7*7) $a": ("49", "Velocity") } for payload, (expected, engine) in payloads.items(): test_url = f"{url}?input={payload}" try: r = requests.get(test_url, timeout=5) if expected in r.text: if fingerprint: return True, test_url, engine return True, test_url, None except Exception: continue return False, url, None
 
 def simulate_ddos(url): try: for _ in range(10): requests.get(url, timeout=1) return "Simulated 10 quick requests to observe server response (safe)." except Exception as e: return f"Error during simulation: {e}"
 
