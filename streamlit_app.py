@@ -1,6 +1,4 @@
-import streamlit as st 
-import requests
-from urllib.parse import urlencode
+import streamlit as st import requests from urllib.parse import urlencode
 
 st.set_page_config(page_title="Advanced Vulnerability Scanner", layout="wide") st.title("🛡️ Advanced Web Vulnerability Tester")
 
@@ -20,5 +18,38 @@ def simulate_ddos(url): try: for _ in range(10): requests.get(url, timeout=1) re
 
 def check_security_headers(url): try: r = requests.get(url, timeout=5) missing = [] recommended = [ "Strict-Transport-Security", "Content-Security-Policy", "X-Frame-Options", "X-Content-Type-Options", "Referrer-Policy", "Permissions-Policy" ] for h in recommended: if h not in r.headers: missing.append(h) if missing: return False, missing return True, [] except Exception as e: return False, [str(e)]
 
-if st.button("Run Tests"): st.markdown("## 🔍 Results") if test_sqli: result, link = test_sql_injection(target_url) st.write("SQL Injection:", "✅ Vulnerable" if result else "❌ Not vulnerable", link) if test_xss: result, link = test_xss_vulnerability(target_url) st.write("XSS:", "✅ Vulnerable" if result else "❌ Not vulnerable", link) if test_redirect: result, link = test_open_redirect(target_url) st.write("Open Redirect:", "✅ Vulnerable" if result else "❌ Not vulnerable", link) if test_ssti: result, link, engine = test_ssti_vulnerability(target_url, enable_fingerprint) if result: st.write("SSTI: ✅ Vulnerable", link) if enable_fingerprint: st.write(f"→ Likely Template Engine: {engine}") else: st.write("SSTI: ❌ Not vulnerable", link) if test_ddos: st.write("DDoS Simulation:", simulate_ddos(target_url)) if test_headers: good, result = check_security_headers(target_url) if good: st.success("✅ All recommended security headers present.") else: st.warning("⚠️ Missing headers:") for h in result: st.text(f"- {h}")
+if st.button("Run Tests"): st.markdown("## 🔍 Results")
+
+if test_sqli:
+    result, link = test_sql_injection(target_url)
+    st.write("**SQL Injection:**", "✅ Vulnerable" if result else "❌ Not vulnerable", link)
+
+if test_xss:
+    result, link = test_xss_vulnerability(target_url)
+    st.write("**XSS:**", "✅ Vulnerable" if result else "❌ Not vulnerable", link)
+
+if test_redirect:
+    result, link = test_open_redirect(target_url)
+    st.write("**Open Redirect:**", "✅ Vulnerable" if result else "❌ Not vulnerable", link)
+
+if test_ssti:
+    result, link, engine = test_ssti_vulnerability(target_url, enable_fingerprint)
+    if result:
+        st.write("**SSTI:** ✅ Vulnerable", link)
+        if enable_fingerprint:
+            st.write(f"→ Likely Template Engine: **{engine}**")
+    else:
+        st.write("**SSTI:** ❌ Not vulnerable", link)
+
+if test_ddos:
+    st.write("**DDoS Simulation:**", simulate_ddos(target_url))
+
+if test_headers:
+    good, result = check_security_headers(target_url)
+    if good:
+        st.success("✅ All recommended security headers present.")
+    else:
+        st.warning("⚠️ Missing headers:")
+        for h in result:
+            st.text(f"- {h}")
 
