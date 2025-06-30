@@ -1,4 +1,5 @@
-import streamlit as st import requests from urllib.parse import urlencode
+import streamlit as st 
+import requests from urllib.parse import urlencode
 
 st.set_page_config(page_title="Advanced Vulnerability Scanner", layout="wide") st.title("🛡️ Advanced Web Vulnerability Tester")
 
