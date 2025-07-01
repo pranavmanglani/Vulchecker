@@ -1,4 +1,4 @@
-import streamlit as st
+a = '''import streamlit as st
 from sslyze import (
     Scanner,
     ServerNetworkLocationViaDirectConnection,
@@ -43,3 +43,4 @@ def scan(url):
         st.error("❌ Failed to connect to the server. Make sure it's using HTTPS.")
     except Exception as e:
         st.error(f"[Cipher] Error: {e}")
+'''
